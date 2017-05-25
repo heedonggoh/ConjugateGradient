@@ -4,7 +4,7 @@
 #########################################################################
 ## USER PROGRAM AND ITS ARGUMENTS
 EXE=./bin/run
-CPUSIZE=2
+CPUSIZE=10
 TITLE=test
 ARG="-title $TITLE -log_view :$TITLE.log"
 ## PETSC AND MPIEXE PATHS

@@ -24,15 +24,14 @@ ecode A(Vec Ax, Vec x, void* paramp);
 int main(int argc, char **args)
 {
 
-  integer size = 10000;
+  integer size = 100;
   integer cflag, iter;
   Mat M;
   Vec x, b, refx;
   PetscRandom rctx;
   real norm,refnorm,err;
-  integer Istart,Iend,Ii,i,j,m,n,J;
+  integer Istart,Iend,Ii;
   scalar v;
-
 
   ierr = PetscInitialize(&argc,&args,(char*)0,help); CHKERRQ(ierr);
   ierr = GetProcInfo();                              CHKERRQ(ierr);
@@ -48,41 +47,27 @@ int main(int argc, char **args)
   ierr = MatSetType(M,MATAIJ);                               CHKERRQ(ierr);
   ierr = MatMPIAIJSetPreallocation(M,size,NULL,size,NULL);   CHKERRQ(ierr);
   
-
   ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rctx); CHKERRQ(ierr);
   ierr = VecSetRandom(refx,rctx);                   CHKERRQ(ierr);
-  
-  ierr = MatGetOwnershipRange(M,&Istart,&Iend);CHKERRQ(ierr);
-  m=1;n=m;
+  ierr = MatGetOwnershipRange(M,&Istart,&Iend);     CHKERRQ(ierr);
   for (Ii=Istart; Ii<Iend; Ii++) {
-    //v = -1.0; i = Ii/n; j = Ii - i*n;
-    //if (i>0)   {J = Ii - n; ierr = MatSetValues(M,1,&Ii,1,&J,&v,INSERT_VALUES);CHKERRQ(ierr);}
-    //if (i<m-1) {J = Ii + n; ierr = MatSetValues(M,1,&Ii,1,&J,&v,INSERT_VALUES);CHKERRQ(ierr);}
-    //if (j>0)   {J = Ii - 1; ierr = MatSetValues(M,1,&Ii,1,&J,&v,INSERT_VALUES);CHKERRQ(ierr);}
-    //if (j<n-1) {J = Ii + 1; ierr = MatSetValues(M,1,&Ii,1,&J,&v,INSERT_VALUES);CHKERRQ(ierr);}
-    //v = 4.0; ierr = MatSetValues(M,1,&Ii,1,&Ii,&v,INSERT_VALUES);CHKERRQ(ierr);
-    v = 4.0*(1+Ii); ierr = MatSetValues(M,1,&Ii,1,&Ii,&v,INSERT_VALUES);CHKERRQ(ierr);
+    v = 4.0*(1+Ii); ierr = MatSetValues(M,1,&Ii,1,&Ii,&v,INSERT_VALUES); CHKERRQ(ierr);
   }
-  ierr = MatAssemblyBegin(M,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-  ierr = MatAssemblyEnd(M,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-  ierr = A(b,refx,M);                               CHKERRQ(ierr);
+  ierr = MatAssemblyBegin(M,MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
+  ierr = MatAssemblyEnd(M,MAT_FINAL_ASSEMBLY);   CHKERRQ(ierr);
+  ierr = A(b,refx,M);                            CHKERRQ(ierr);
   
-  ierr = ConjugateGradientInitialize(size);         CHKERRQ(ierr);
-  ierr = ConjugateGradientSetOperator(&A);          CHKERRQ(ierr);
-  ierr = ConjugateGradientSolve(x,b,M);             CHKERRQ(ierr);
+  ierr = ConjugateGradientInitialize(size);              CHKERRQ(ierr);
+  ierr = ConjugateGradientSetOperator(&A);               CHKERRQ(ierr);
+  ierr = ConjugateGradientSolve(x,b,M);                  CHKERRQ(ierr);
   ierr = CojugateGradientGetConvInfo(&cflag,&iter,&err); CHKERRQ(ierr);
-  ierr = ConjugateGradientFinalize();               CHKERRQ(ierr);
+  ierr = ConjugateGradientFinalize();                    CHKERRQ(ierr);
 
-  ierr = VecNorm(refx,NORM_2,&refnorm);                                          CHKERRQ(ierr);
-  ierr = VecAXPY(x,-1.0,refx);                                                   CHKERRQ(ierr);
-  ierr = VecNorm(x,NORM_2,&norm);                                                CHKERRQ(ierr);
-  ierr = wprintf("cflag = %d\titer = %d\terror = %e\n",cflag,iter,err); CHKERRQ(ierr);
-
-  ierr = wprintf("x error = %e\n",norm/refnorm); CHKERRQ(ierr);
-
-
-
-
+  ierr = VecNorm(refx,NORM_2,&refnorm);                                 CHKERRQ(ierr);
+  ierr = VecAXPY(x,-1.0,refx);                                          CHKERRQ(ierr);
+  ierr = VecNorm(x,NORM_2,&norm);                                       CHKERRQ(ierr);
+  ierr = wprintf("cflag = %d\titer = %d\terror = %e\t",cflag,iter,err); CHKERRQ(ierr);
+  ierr = wprintf("x error = %e\n",norm/refnorm);                        CHKERRQ(ierr);
 
   ierr = VecDestroy(&refx);         CHKERRQ(ierr);
   ierr = VecDestroy(&x);            CHKERRQ(ierr);
@@ -110,6 +95,5 @@ ecode GetProcInfo()
 ecode A(Vec Ax, Vec x, void* paramp)
 {
   Mat M = paramp;
-  ierr = MatMult(M,x,Ax); CHKERRQ(ierr);
-  return 0;
+  return MatMult(M,x,Ax);
 }

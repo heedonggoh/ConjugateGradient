@@ -39,25 +39,25 @@ ecode ConjugateGradientSolve(Vec x, Vec b, void* paramp)
 {
   scalar refnorm;
   cflag = 0;
-  ierr = VecCopy(b,r);      CHKERRQ(ierr);
-  ierr = inA(d,x,paramp);   CHKERRQ(ierr);
-  ierr = VecAXPY(r,-1.0,d); CHKERRQ(ierr);
-  ierr = VecCopy(r,p);      CHKERRQ(ierr);
-  ierr = VecDot(r,r,&rtr);  CHKERRQ(ierr);
+  ierr = VecCopy(b,r);               CHKERRQ(ierr);
+  ierr = inA(d,x,paramp);            CHKERRQ(ierr);
+  ierr = VecAXPY(r,-1.0,d);          CHKERRQ(ierr);
+  ierr = VecCopy(r,p);               CHKERRQ(ierr);
+  ierr = VecDot(r,r,&rtr);           CHKERRQ(ierr);
   ierr = VecNorm(b,NORM_2,&refnorm); CHKERRQ(ierr);
   for(iter=0;iter<maxiter;++iter){
-    ierr = inA(d,p,paramp);   CHKERRQ(ierr);
-    ierr = VecDot(p,d,&ptAp); CHKERRQ(ierr);
+    ierr = inA(d,p,paramp);          CHKERRQ(ierr);
+    ierr = VecDot(p,d,&ptAp);        CHKERRQ(ierr);
     if(ptAp<0){ cflag = 2; break; }
     alpha = rtr/ptAp;
-    ierr = VecAXPY(x,alpha,p);   CHKERRQ(ierr);
-    ierr = VecAXPY(r,-alpha,d);  CHKERRQ(ierr);
-    ierr = VecDot(r,r,&nrtr);    CHKERRQ(ierr);
-    ierr = VecNorm(r,NORM_2,&err); CHKERRQ(ierr);
+    ierr = VecAXPY(x,alpha,p);       CHKERRQ(ierr);
+    ierr = VecAXPY(r,-alpha,d);      CHKERRQ(ierr);
+    ierr = VecDot(r,r,&nrtr);        CHKERRQ(ierr);
+    ierr = VecNorm(r,NORM_2,&err);   CHKERRQ(ierr);
     err = err/refnorm;
     if(err<errtol){ cflag = 1; break; }
     beta = nrtr/rtr;
-    ierr= VecAYPX(p,beta,r);     CHKERRQ(ierr);
+    ierr= VecAYPX(p,beta,r);         CHKERRQ(ierr);
     rtr = nrtr;
   }
   return 0;
