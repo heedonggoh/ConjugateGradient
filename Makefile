@@ -9,7 +9,7 @@ SDIR = ./src
 ODIR = ./bin
 ## PETSc path
 PETSC_DIR = /terra3/heedong/software/petsc-3.7.5
-PETSC_ARCH = arch-icc-debug
+PETSC_ARCH = arch-icc-opt
 ## Additional compile option
 CFLAGS = -Wall -Wextra -pedantic -std=c11
 ## DO NOT CHANGE ###################################################
