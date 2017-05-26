@@ -7,7 +7,6 @@ scalar rtr, nrtr, ptAp, alpha, beta;
 Vec r,p,d;
 real errtol,err;
 
-
 ecode ConjugateGradientInitialize(integer _size)
 {
   size = _size;
@@ -26,12 +25,6 @@ ecode ConjugateGradientFinalize()
   ierr = VecDestroy(&r); CHKERRQ(ierr);
   ierr = VecDestroy(&p); CHKERRQ(ierr);
   ierr = VecDestroy(&d); CHKERRQ(ierr);
-  return 0;
-}
-
-ecode ConjugateGradientSetOperator(operator _cgAx)
-{
-  cgAx = _cgAx;
   return 0;
 }
 
@@ -68,5 +61,23 @@ ecode CojugateGradientGetConvInfo(integer* _cflag, integer* _iter, real* _err)
   *_cflag = cflag;
   *_iter = iter;
   *_err = err;
+  return 0;
+}
+
+ecode ConjugateGradientSetOperator(operator _cgAx)
+{
+  cgAx = _cgAx;
+  return 0;
+}
+
+ecode CojugateGradientSetTolerance(real _errtol)
+{
+  errtol = _errtol;
+  return 0;
+}
+
+ecode CojugateGradientSetMaxIter(real _maxiter)
+{
+  maxiter = _maxiter;
   return 0;
 }

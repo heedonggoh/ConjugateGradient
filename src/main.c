@@ -24,7 +24,7 @@ ecode A(Vec Ax, Vec x, void* paramp);
 int main(int argc, char **args)
 {
 
-  integer size = 100;
+  integer size = 500;
   integer cflag, iter;
   Mat M;
   Vec x, b, refx;
@@ -63,11 +63,11 @@ int main(int argc, char **args)
   ierr = CojugateGradientGetConvInfo(&cflag,&iter,&err); CHKERRQ(ierr);
   ierr = ConjugateGradientFinalize();                    CHKERRQ(ierr);
 
-  ierr = VecNorm(refx,NORM_2,&refnorm);                                 CHKERRQ(ierr);
-  ierr = VecAXPY(x,-1.0,refx);                                          CHKERRQ(ierr);
-  ierr = VecNorm(x,NORM_2,&norm);                                       CHKERRQ(ierr);
-  ierr = wprintf("cflag = %d\titer = %d\terror = %e\t",cflag,iter,err); CHKERRQ(ierr);
-  ierr = wprintf("x error = %e\n",norm/refnorm);                        CHKERRQ(ierr);
+  ierr = VecNorm(refx,NORM_2,&refnorm);                                    CHKERRQ(ierr);
+  ierr = VecAXPY(x,-1.0,refx);                                             CHKERRQ(ierr);
+  ierr = VecNorm(x,NORM_2,&norm);                                          CHKERRQ(ierr);
+  ierr = wprintf("cflag = %d\titer = %d\tcg error = %e\t",cflag,iter,err); CHKERRQ(ierr);
+  ierr = wprintf("x error = %e\n",norm/refnorm);                           CHKERRQ(ierr);
 
   ierr = VecDestroy(&refx);         CHKERRQ(ierr);
   ierr = VecDestroy(&x);            CHKERRQ(ierr);
