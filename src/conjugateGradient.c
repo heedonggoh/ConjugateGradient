@@ -4,8 +4,8 @@ operator cgAx;
 ecode ierr;
 integer size, maxiter, iter, cflag;
 scalar rtr, nrtr, ptAp, alpha, beta;
-Vec r,p,d;
-real errtol,err;
+real errtol, err;
+Vec r, p, d;
 
 ecode ConjugateGradientInitialize(integer _size)
 {
@@ -76,7 +76,7 @@ ecode CojugateGradientSetTolerance(real _errtol)
   return 0;
 }
 
-ecode CojugateGradientSetMaxIter(real _maxiter)
+ecode CojugateGradientSetMaxIter(integer _maxiter)
 {
   maxiter = _maxiter;
   return 0;

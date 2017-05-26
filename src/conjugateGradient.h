@@ -39,6 +39,6 @@ ecode ConjugateGradientSetOperator(operator _inA);
 ecode CojugateGradientSetTolerance(real _errtol);
 
 /* sets the maximum number of iterations, default: vector size */
-ecode CojugateGradientSetMaxIter(real _maxiter);
+ecode CojugateGradientSetMaxIter(integer _maxiter);
 
 #endif
