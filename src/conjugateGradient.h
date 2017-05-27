@@ -27,7 +27,7 @@ ecode ConjugateGradientSolve(Vec x, Vec b, integer nvargs, ...);
 /* gets convergence flag, iteration count, relative error
  * cflag == 0 - not converged
  * cflag == 1 - converged
- * cflag == 2 - not Hermitian 
+ * cflag == 2 - not positive Hermitian definite 
  * iter - number of iterations
  * err - relative error in L2, ||r||/||b|| */
 ecode CojugateGradientGetConvInfo(integer* _cflag, integer* _iter, real* _err);

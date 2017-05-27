@@ -6,7 +6,7 @@
 EXE=./bin/run
 CPUSIZE=20
 TITLE=test
-SIZE=900
+SIZE=1000
 ARG="-title $TITLE -size $SIZE -log_view :$TITLE.log"
 ## PETSC AND MPIEXE PATHS
 export PETSC_DIR=/terra3/heedong/software/petsc-3.7.5
