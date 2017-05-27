@@ -16,7 +16,8 @@ char title[charSize];
 integer cpuSize, cpuRank;
 
 ecode GetProcInfo();
-ecode A(Vec Ax, Vec x, void* paramp);
+ecode A(Vec Ax, Vec x, integer nargs, ...);
+ecode vA(Vec Ax, Vec x, integer nvargs, va_list vargs);
 
 
 #undef __FUNCT__
@@ -24,7 +25,7 @@ ecode A(Vec Ax, Vec x, void* paramp);
 int main(int argc, char **args)
 {
 
-  integer size = 500;
+  integer size = 100;
   integer cflag, iter;
   Mat M;
   Vec x, b, refx;
@@ -45,7 +46,7 @@ int main(int argc, char **args)
   ierr = MatCreate(PETSC_COMM_WORLD,&M);                     CHKERRQ(ierr);
   ierr = MatSetSizes(M,PETSC_DECIDE,PETSC_DECIDE,size,size); CHKERRQ(ierr);
   ierr = MatSetType(M,MATAIJ);                               CHKERRQ(ierr);
-  ierr = MatMPIAIJSetPreallocation(M,size,NULL,size,NULL);   CHKERRQ(ierr);
+  ierr = MatSetUp(M);                                        CHKERRQ(ierr);
   
   ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rctx); CHKERRQ(ierr);
   ierr = VecSetRandom(refx,rctx);                   CHKERRQ(ierr);
@@ -55,11 +56,11 @@ int main(int argc, char **args)
   }
   ierr = MatAssemblyBegin(M,MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
   ierr = MatAssemblyEnd(M,MAT_FINAL_ASSEMBLY);   CHKERRQ(ierr);
-  ierr = A(b,refx,M);                            CHKERRQ(ierr);
-  
+  ierr = A(b,refx,1,M);                          CHKERRQ(ierr);
+
   ierr = ConjugateGradientInitialize(size);              CHKERRQ(ierr);
-  ierr = ConjugateGradientSetOperator(&A);               CHKERRQ(ierr);
-  ierr = ConjugateGradientSolve(x,b,M);                  CHKERRQ(ierr);
+  ierr = ConjugateGradientSetOperator(&vA);              CHKERRQ(ierr);
+  ierr = ConjugateGradientSolve(x,b,1,M);                CHKERRQ(ierr);
   ierr = CojugateGradientGetConvInfo(&cflag,&iter,&err); CHKERRQ(ierr);
   ierr = ConjugateGradientFinalize();                    CHKERRQ(ierr);
 
@@ -92,8 +93,17 @@ ecode GetProcInfo()
   return 0;
 }
 
-ecode A(Vec Ax, Vec x, void* paramp)
+ecode A(Vec Ax, Vec x, integer nvargs, ...)
 {
-  Mat M = paramp;
+  va_list vargs;
+  va_start(vargs,nvargs);
+  ierr = vA(Ax,x,nvargs,vargs); CHKERRQ(ierr);
+  va_end(vargs);
+  return 0;
+}
+
+ecode vA(Vec Ax, Vec x, integer nvargs, va_list vargs)
+{
+  Mat M = va_arg(vargs,Mat);
   return MatMult(M,x,Ax);
 }

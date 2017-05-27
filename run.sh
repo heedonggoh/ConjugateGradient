@@ -4,12 +4,12 @@
 #########################################################################
 ## USER PROGRAM AND ITS ARGUMENTS
 EXE=./bin/run
-CPUSIZE=10
+CPUSIZE=5
 TITLE=test
 ARG="-title $TITLE -log_view :$TITLE.log"
 ## PETSC AND MPIEXE PATHS
 export PETSC_DIR=/terra3/heedong/software/petsc-3.7.5
-export PETSC_ARCH=arch-icc-opt
+export PETSC_ARCH=arch-icc-debug
 export MPIEXE=$PETSC_DIR/bin/petscmpiexec
 ## DO NOT CHANGE ########################################################
 case $1 in

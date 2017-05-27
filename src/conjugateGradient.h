@@ -12,7 +12,7 @@
 #define ecode PetscErrorCode
 
 /* I/O structure of the operator */
-typedef ecode (*operator)(Vec Ax, Vec x, void* paramp);
+typedef ecode (*operator)(Vec Ax, Vec x, integer nvargs, va_list vargs);
 
 /* initializes CG solver 
  * _size - vector size */
@@ -22,7 +22,7 @@ ecode ConjugateGradientInitialize(integer _size);
 ecode ConjugateGradientFinalize();
 
 /* solves Ax = b */
-ecode ConjugateGradientSolve(Vec x, Vec b, void* paramp);
+ecode ConjugateGradientSolve(Vec x, Vec b, integer nvargs, ...);
 
 /* gets convergence flag, iteration count, relative error
  * cflag == 0 - not converged

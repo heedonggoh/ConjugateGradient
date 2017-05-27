@@ -28,18 +28,23 @@ ecode ConjugateGradientFinalize()
   return 0;
 }
 
-ecode ConjugateGradientSolve(Vec x, Vec b, void* paramp)
+ecode ConjugateGradientSolve(Vec x, Vec b, integer nvargs, ...)
 {
+  va_list vargs;
   scalar refnorm;
   cflag = 0;
   ierr = VecCopy(b,r);               CHKERRQ(ierr);
-  ierr = cgAx(d,x,paramp);            CHKERRQ(ierr);
+  va_start(vargs,nvargs);
+  ierr = cgAx(d,x,nvargs,vargs);     CHKERRQ(ierr);
+  va_end(vargs);
   ierr = VecAXPY(r,-1.0,d);          CHKERRQ(ierr);
   ierr = VecCopy(r,p);               CHKERRQ(ierr);
   ierr = VecDot(r,r,&rtr);           CHKERRQ(ierr);
   ierr = VecNorm(b,NORM_2,&refnorm); CHKERRQ(ierr);
   for(iter=0;iter<maxiter;++iter){
-    ierr = cgAx(d,p,paramp);          CHKERRQ(ierr);
+    va_start(vargs,nvargs);
+    ierr = cgAx(d,p,nvargs,vargs);   CHKERRQ(ierr);
+    va_end(vargs);
     ierr = VecDot(p,d,&ptAp);        CHKERRQ(ierr);
     if(ptAp<0){ cflag = 2; break; }
     alpha = rtr/ptAp;
@@ -53,6 +58,7 @@ ecode ConjugateGradientSolve(Vec x, Vec b, void* paramp)
     ierr= VecAYPX(p,beta,r);         CHKERRQ(ierr);
     rtr = nrtr;
   }
+  
   return 0;
 }
 
