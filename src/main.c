@@ -24,18 +24,18 @@ ecode vA(Vec Ax, Vec x, integer nvargs, va_list vargs);
 #define __FUNCT__ "main"
 int main(int argc, char **args)
 {
-
   integer size = 100;
   integer cflag, iter;
   Mat M;
   Vec x, b, refx;
   PetscRandom rctx;
   real norm,refnorm,err;
-  integer Istart,Iend,Ii;
+  integer Istart,Iend,Ii,loc1,loc2;
   scalar v;
 
-  ierr = PetscInitialize(&argc,&args,(char*)0,help); CHKERRQ(ierr);
-  ierr = GetProcInfo();                              CHKERRQ(ierr);
+  ierr = PetscInitialize(&argc,&args,(char*)0,help);             CHKERRQ(ierr);
+  ierr = GetProcInfo();                                          CHKERRQ(ierr);
+  ierr = PetscOptionsGetInt(NULL,NULL,"-size",&size,NULL);       CHKERRQ(ierr);
 
   ierr = VecCreate(PETSC_COMM_WORLD,&x);   CHKERRQ(ierr);
   ierr = VecSetSizes(x,PETSC_DECIDE,size); CHKERRQ(ierr);
@@ -48,11 +48,17 @@ int main(int argc, char **args)
   ierr = MatSetType(M,MATAIJ);                               CHKERRQ(ierr);
   ierr = MatSetUp(M);                                        CHKERRQ(ierr);
   
-  ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rctx); CHKERRQ(ierr);
-  ierr = VecSetRandom(refx,rctx);                   CHKERRQ(ierr);
-  ierr = MatGetOwnershipRange(M,&Istart,&Iend);     CHKERRQ(ierr);
+  ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rctx);      CHKERRQ(ierr);
+  ierr = VecSetRandom(refx,rctx);                        CHKERRQ(ierr);
+  ierr = MatGetOwnershipRange(M,&Istart,&Iend);          CHKERRQ(ierr);
   for (Ii=Istart; Ii<Iend; Ii++) {
-    v = 4.0*(1+Ii); ierr = MatSetValues(M,1,&Ii,1,&Ii,&v,INSERT_VALUES); CHKERRQ(ierr);
+    loc1 = Ii; loc2 = Ii+1;
+    v = 2.0; ierr = MatSetValues(M,1,&loc1,1,&loc1,&v,INSERT_VALUES); CHKERRQ(ierr);
+    v = -1.0; 
+    if (loc2<size){
+      ierr = MatSetValues(M,1,&loc1,1,&loc2,&v,INSERT_VALUES);        CHKERRQ(ierr);
+      ierr = MatSetValues(M,1,&loc2,1,&loc1,&v,INSERT_VALUES);        CHKERRQ(ierr);
+    }
   }
   ierr = MatAssemblyBegin(M,MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
   ierr = MatAssemblyEnd(M,MAT_FINAL_ASSEMBLY);   CHKERRQ(ierr);
