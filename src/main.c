@@ -74,9 +74,9 @@ int main(int argc, char **args)
   ierr = VecAXPY(x,-1.0,refx);                                             CHKERRQ(ierr);
   ierr = VecNorm(x,NORM_2,&norm);                                          CHKERRQ(ierr);
   ierr = wprintf("matrix size = %d\n",size);                               CHKERRQ(ierr);
-  ierr = wprintf("cflag = %d (== 0 not converged; == 1 converged; == 2 not positive Hermitian definite)\n",cflag);
-  ierr = wprintf("iter = %d\tcg error = %e\t",iter,err); CHKERRQ(ierr);
-  ierr = wprintf("x error = %e\n",norm/refnorm);                           CHKERRQ(ierr);
+  ierr = wprintf("cflag = %d (== 0 not converged; == 1 converged; == 2 not Hermitian positive definite)\n",cflag);
+  ierr = wprintf("iteration count = %d\ncg error = %e (||r||/||b||)\n",iter,err); CHKERRQ(ierr);
+  ierr = wprintf("x error = %e (||x-xr||/||xr||)\n",norm/refnorm);                           CHKERRQ(ierr);
   ierr = wprintf("\n" BOLD "End %s" RESET "\n",title);                     CHKERRQ(ierr);
 
   ierr = VecDestroy(&refx);         CHKERRQ(ierr);

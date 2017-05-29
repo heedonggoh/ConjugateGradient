@@ -46,7 +46,7 @@ ecode ConjugateGradientSolve(Vec x, Vec b, integer nvargs, ...)
     ierr = cgAx(d,p,nvargs,vargs);   CHKERRQ(ierr);
     va_end(vargs);
     ierr = VecDot(p,d,&ptAp);        CHKERRQ(ierr);
-    if(ptAp<0){ cflag = 2; break; }
+    if(ptAp<=0){ cflag = 2; break; }
     alpha = rtr/ptAp;
     ierr = VecAXPY(x,alpha,p);       CHKERRQ(ierr);
     ierr = VecAXPY(r,-alpha,d);      CHKERRQ(ierr);
