@@ -11,7 +11,7 @@ ecode ConjugateGradientInitialize(integer _size)
 {
   size = _size;
   maxiter = _size;
-  errtol = 1.0e-10;
+  errtol = 1.0e-13;
   ierr = VecCreate(PETSC_COMM_WORLD,&r);   CHKERRQ(ierr);
   ierr = VecSetSizes(r,PETSC_DECIDE,size); CHKERRQ(ierr);
   ierr = VecSetFromOptions(r);             CHKERRQ(ierr);
@@ -32,7 +32,7 @@ ecode ConjugateGradientSolve(Vec x, Vec b, integer nvargs, ...)
 {
   va_list vargs;
   scalar refnorm;
-  cflag = 0;
+  cflag = 1;
   ierr = VecCopy(b,r);               CHKERRQ(ierr);
   va_start(vargs,nvargs);
   ierr = cgAx(d,x,nvargs,vargs);     CHKERRQ(ierr);
@@ -53,7 +53,7 @@ ecode ConjugateGradientSolve(Vec x, Vec b, integer nvargs, ...)
     ierr = VecDot(r,r,&nrtr);        CHKERRQ(ierr);
     ierr = VecNorm(r,NORM_2,&err);   CHKERRQ(ierr);
     err = err/refnorm;
-    if(err<errtol){ cflag = 1; break; }
+    if(err<errtol){ cflag = 0; break; }
     beta = nrtr/rtr;
     ierr= VecAYPX(p,beta,r);         CHKERRQ(ierr);
     rtr = nrtr;

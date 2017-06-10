@@ -4,9 +4,9 @@
 #########################################################################
 ## USER PROGRAM AND ITS ARGUMENTS
 EXE=./bin/run
-CPUSIZE=20
+CPUSIZE=10
 TITLE=test
-SIZE=1000
+SIZE=100
 ARG="-title $TITLE -size $SIZE -log_view :$TITLE.log"
 ## PETSC AND MPIEXE PATHS
 export PETSC_DIR=/terra3/heedong/software/petsc-3.7.5
